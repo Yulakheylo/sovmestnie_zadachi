@@ -13,3 +13,4 @@ def show_map(ll_spn=None, map_type="map", add_params=None):
     response = requests.get(map_request)
     if response:
         Image.open(BytesIO(response.content)).show()
+
