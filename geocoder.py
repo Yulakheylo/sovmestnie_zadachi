@@ -15,6 +15,7 @@ def geocode(toponym_to_find):
         if toponym:
             return toponym
 
+
 def get_coordinates(address):
     toponym = geocode(address)
     if not toponym:
@@ -41,5 +42,3 @@ def get_ll_span(address):
 
     span = f"{dx},{dy}"
     return ll, span
-
-
