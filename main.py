@@ -2,6 +2,7 @@ import os
 import sys
 
 import requests
+from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel
 
@@ -62,6 +63,9 @@ class BigMap(QWidget):
     def keyPressEvent(self, event):
         if event.key() == Qt.Key_Up:
             self.scale = min(self.scale + 1, 21)
+            self.create_image()
+        elif event.key() == Qt.Key_Down:
+            self.scale = max(self.scale - 1, 21)
             self.create_image()
 
 
