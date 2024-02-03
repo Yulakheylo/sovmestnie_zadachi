@@ -19,7 +19,6 @@ class BigMap(QWidget):
             self.lon = "39.573954"
             self.lat = "52.621706"
             self.scale = "12"
-        self.getImage()
         self.initUI()
 
     def getImage(self):
@@ -49,10 +48,21 @@ class BigMap(QWidget):
         self.image = QLabel(self)
         self.image.move(0, 0)
         self.image.resize(600, 450)
-        self.image.setPixmap(self.pixmap)
+        self.create_image()
 
     def closeEvent(self, event):
         os.remove(self.map_file)
+
+    def create_image(self):
+        self.getImage()
+        self.pixmap = QPixmap(self.map_file)
+        self.image.setPixmap(self.pixmap)
+        self.update()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Up:
+            self.scale = min(self.scale + 1, 21)
+            self.create_image()
 
 
 if __name__ == '__main__':
