@@ -1,62 +1,68 @@
-import os
-import sys
+from flask import Flask
+from flask import url_for
 
-import requests
-from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QApplication, QWidget, QLabel
-
-SCREEN_SIZE = [600, 450]
+app = Flask(__name__)
 
 
-class BigMap(QWidget):
-    def __init__(self):
-        super().__init__()
-        try:
-            self.lon = sys.argv[1]
-            self.lat = sys.argv[2]
-            self.scale = sys.argv[3]
-        except IndexError:
-            self.lon = "39.573954"
-            self.lat = "52.621706"
-            self.scale = "12"
-        self.getImage()
-        self.initUI()
+@app.route('/')
+def index():
+    return "Миссия Колонизация Марса"
 
-    def getImage(self):
-        api_server = "http://static-maps.yandex.ru/1.x/"
-        params = {
-            "ll": f"{self.lon},{self.lat}",
-            "z": self.scale,
-            "l": "map"
-        }
-        response = requests.get(api_server, params=params)
 
-        if not response:
-            print("Ошибка выполнения запроса:")
-            print(response.url)
-            print("Http статус:", response.status_code, "(", response.reason, ")")
-            sys.exit()
+@app.route('/index')
+def bage():
+    return "И на Марсе будут яблони цвести!"
 
-        self.map_file = "map.png"
-        with open(self.map_file, "wb") as file:
-            file.write(response.content)
 
-    def initUI(self):
-        self.setGeometry(100, 100, *SCREEN_SIZE)
-        self.setWindowTitle('Отображение карты')
+@app.route('/promotion')
+def promotion():
+    return '''
+Человечество вырастает из детства.</br>
+Человечеству мала одна планета.</br>
+Мы сделаем обитаемыми безжизненные пока планеты.</br>
+И начнем с Марса!</br>
+Присоединяйся!</br>
+'''
 
-        self.pixmap = QPixmap(self.map_file)
-        self.image = QLabel(self)
-        self.image.move(0, 0)
-        self.image.resize(600, 450)
-        self.image.setPixmap(self.pixmap)
 
-    def closeEvent(self, event):
-        os.remove(self.map_file)
+@app.route('/promotion_image')
+def return_sample_page():
+    return f"""<!doctype html>
+                <html lang="en">
+                  <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" background-color: brown>
+                    <link rel="stylesheet" 
+                    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" 
+                    integrity="sha384-giJF6kkoqNQ00vy+HMDP7azOuL0xtbfIcaT9wjKHr8RbDVddVHyTfAAsrekwKmP1" 
+                    crossorigin="anonymous">
+                    <link rel="stylesheet" type="text/css" href="{url_for('static', filename='css/style.css')}" />
+                    <title>Колонизация</title>
+                  </head>
+                  <body>
+                    <h1>Жди нас, Марс!</h1>
+                  </body>
+                    <img src="{url_for('static', filename='img/mars.png')}" 
+                    alt="здесь должна была быть картинка, но не нашлась">
+                  </body>
+                    <div class="alert alert-dark" role="alert">
+                      Человечество вырастает из детства.
+                    </div>
+                    <div class="alert alert-success" role="alert">
+                      Человечеству мала одна планета.
+                    </div>
+                    <div class="alert alert-secondary" role="alert">
+                      Мы сделаем обитаемыми безжизненные пока планеты.
+                    </div>
+                    <div class="alert alert-warning" role="alert">
+                      И начнем с Марса!
+                    </div>
+                    <div class="alert alert-danger" role="alert">
+                      Присоединяйся!
+                    </div>
+                  </body>
+                </html>"""
 
 
 if __name__ == '__main__':
-    app = QApplication(sys.argv)
-    ex = BigMap()
-    ex.show()
-    sys.exit(app.exec())
+    app.run(port=8080, host='127.0.0.1')
